@@ -4,7 +4,5 @@ import App from "./app"
 import "../default.css"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <App/>
-  </BrowserRouter>
+  <App/>
 )
