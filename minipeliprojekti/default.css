@@ -1,0 +1,59 @@
+@font-face {
+    font-family: Cascade;
+    src: local("Cascade"), url(./Cascade.ttf) format("woff");
+}
+
+:root {
+    background-color: #131025;
+    font-family: "Cascade";
+    --glowStrength: 13px; /* set this to 0px to disable glow */
+    --red: #eb425e;
+    --cyan: #3fddf1;
+    --blue: #4690e6;
+    --orange: #e6bd39;
+    --pink: #ce37b5;
+    --glow: 0px 0px var(--glowStrength);
+}
+
+input, button {
+    background-color: transparent;
+    border-style: double;
+    border-width: 3px;
+    margin: 10px;
+    font-family: "Cascade";
+}
+
+input {
+    border-color: var(--cyan);
+    text-shadow: var(--glow) var(--cyan);
+}
+
+button {
+    border-color: var(--red);
+    text-shadow: var(--glow) var(--red);
+}
+
+h1, h4, input {
+    color: var(--pink);
+    text-shadow: var(--glow) var(--pink);
+}
+
+h2, h5 {
+    color: var(--red);
+    text-shadow: var(--glow) var(--red);
+}
+
+h3, h6, button {
+    color: var(--orange);
+    text-shadow: var(--glow) var(--orange);
+}
+
+p {
+    color: var(--blue);
+    text-shadow: var(--glow) var(--blue);
+}
+
+th {
+    color: var(--cyan);
+    text-shadow: var(--glow) var(--cyan);
+}
