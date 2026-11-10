@@ -5,5 +5,7 @@ import "../default.css"
 import "../app.css"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <App/>
+  <BrowserRouter>
+    <App/>
+  </BrowserRouter>
 )
