@@ -1,13 +1,15 @@
-import GameButton from "../components/gameButton"
+import {useState} from "react"
+import MainLeft from "../components/MainLeft"
 
 const Main = () => {
+  const [selectedGame, setGame] = useState("2048")
+  const [gameRules, setRules] = useState("Kato vaikka googlesta")
   return (<div id="mainContainer">
-    <div id="mainLeft"><p>Pelit</p><br/>
-      <GameButton text="Muistipeli"/>
-      <GameButton text="Arvaa numero"/>
-      <GameButton text="2048"/>
+    <MainLeft setGame={setGame} setRules={setRules}/>
+    <div id="mainRight"><p>Säännöt</p><br/>
+      <h2 id="name">{selectedGame}</h2>
+      <p id="rules">{gameRules}</p>
     </div>
-    <div id="mainRight">Pelin säännöt</div>
   </div>)
 }
 
