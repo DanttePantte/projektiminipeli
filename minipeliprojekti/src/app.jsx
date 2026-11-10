@@ -8,7 +8,7 @@ const App = () => {
       <div id="titleBar">
         <h1>Minipelit</h1>
       </div>
-      <Main/>1
+      <Main/>
     </>
   )
 }
