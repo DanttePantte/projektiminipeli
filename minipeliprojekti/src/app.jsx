@@ -1,4 +1,4 @@
-import {Routes, Route, useNavigate} from "react-router-dom"
+import {Routes, Route, Link, useNavigate} from "react-router-dom"
 import {useState, useEffect} from "react"
 import Main from "./screens/Mainpage"
 import Memory from "./screens/Memory"
