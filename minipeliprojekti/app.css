@@ -1,3 +1,23 @@
 h1 {
   text-align: center;
 }
+
+.gameButton {
+  width: 80%;
+  height: 33%;
+  font-size: 30px;
+  border: 7px double var(--red);
+}
+
+#mainContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+#mainLeft {
+  color: var(--blue);
+}
+
+#mainRight {
+  color: var(--red);
+}
