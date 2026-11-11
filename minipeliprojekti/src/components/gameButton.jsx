@@ -1,4 +1,4 @@
-import rules from "./rules"
+import rules from "../scripts/rules"
 
 const GameButton = ({text, setGame, setRules}) => {
   const handleClick = () => {

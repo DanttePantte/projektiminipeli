@@ -2,7 +2,7 @@ h1 {
   text-align: center;
 }
 
-.gameButton {
+.gameButton, #startGame {
   width: 80%;
   height: 33%;
   font-size: 30px;
@@ -16,8 +16,10 @@ h1 {
 
 #mainLeft {
   color: var(--blue);
+  width: 40%;
 }
 
 #mainRight {
   color: var(--red);
+  width: 40%;
 }
