@@ -23,3 +23,20 @@ h1 {
   color: var(--red);
   width: 40%;
 }
+
+#gameContainer {
+  width: 400px;
+  height: 400px;
+}
+
+.numberRow {
+  display: flex;
+}
+
+.cell {
+  border: 5px double var(--pink);
+  width: 100px;
+  height: 100px;
+  margin: 3px;
+  padding: 0px;
+}

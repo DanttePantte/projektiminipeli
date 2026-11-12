@@ -1,4 +1,5 @@
 import {useNavigate} from "react-router-dom"
+import Board from "../components/board"
 
 const _2048 = () => {
   const nav = useNavigate()
@@ -6,6 +7,7 @@ const _2048 = () => {
     <h1>2048</h1>
     <pre>Tänne tulee peli</pre>
     <button onClick={()=>nav("/")}>Takaisin</button>
+    <Board/>
   </>)
 }
 
