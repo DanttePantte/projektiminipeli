@@ -28,8 +28,14 @@ const images = [
   kuva16, kuva17, kuva18, kuva19, kuva20,
 ]
 
-const createDeck = () => {
-  const cards = images.flatMap((image, pair) => [
+const difficulties = [
+  {id: "easy", label: "Helppo", pairs: 6},
+  {id: "medium", label: "Medium", pairs: 12},
+  {id: "hard", label: "Vaikea", pairs: 20},
+]
+
+const createDeck = (pairCount) => {
+  const cards = images.slice(0, pairCount).flatMap((image, pair) => [
     {id: `${pair}-a`, pair, image},
     {id: `${pair}-b`, pair, image},
   ])
@@ -44,20 +50,23 @@ const createDeck = () => {
 
 const Memory = () => {
   const navigate = useNavigate()
-  const [cards, setCards] = useState(createDeck)
+  const [difficulty, setDifficulty] = useState("medium")
+  const activeDifficulty = difficulties.find(({id}) => id === difficulty)
+  const [cards, setCards] = useState(() => createDeck(activeDifficulty.pairs))
   const [selectedCards, setSelectedCards] = useState([])
   const [matchedCards, setMatchedCards] = useState([])
   const [moves, setMoves] = useState(0)
   const [locked, setLocked] = useState(false)
   const timeout = useRef(null)
   const pairsFound = matchedCards.length / 2
-  const gameComplete = pairsFound === images.length
+  const gameComplete = pairsFound === activeDifficulty.pairs
  
   useEffect(() => () => clearTimeout(timeout.current), [])
  
-  const restartGame = () => {
+  const restartGame = (nextDifficulty = difficulty) => {
     clearTimeout(timeout.current)
-    setCards(createDeck())
+    setDifficulty(nextDifficulty)
+    setCards(createDeck(difficulties.find(({id}) => id === nextDifficulty).pairs))
     setSelectedCards([])
     setMatchedCards([])
     setMoves(0)
@@ -95,10 +104,24 @@ const Memory = () => {
       <header className="memory-header">
         <div>
           <h2>Muistipeli</h2>
-          <p>Siirrot: {moves} · Parit: {pairsFound}/{images.length}</p>
+          <p>Siirrot: {moves} · Parit: {pairsFound}/{activeDifficulty.pairs}</p>
         </div>
         <button type="button" onClick={restartGame}>Aloita alusta</button>
       </header>
+
+      <div className="memory-levels" role="group" aria-label="Vaikeustaso">
+        {difficulties.map(({id, label}) => (
+          <button
+            key={id}
+            type="button"
+            className={difficulty === id ? "is-active" : ""}
+            aria-pressed={difficulty === id}
+            onClick={() => restartGame(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
       {gameComplete && <p className="memory-complete">Kaikki parit löytyivät! Hienosti pelattu.</p>}
 

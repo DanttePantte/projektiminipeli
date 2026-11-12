@@ -42,6 +42,26 @@ h1 {
   margin: 0 0 8px;
 }
 
+.memory-levels {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.memory-levels button {
+  flex: 1;
+  min-height: 42px;
+  margin: 0;
+  border-color: var(--blue);
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.memory-levels button.is-active {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
 .memory-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
