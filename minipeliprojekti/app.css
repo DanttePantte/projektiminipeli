@@ -23,3 +23,71 @@ h1 {
   color: var(--red);
   width: 40%;
 }
+
+.memory-game {
+  width: min(900px, calc(100% - 32px));
+  margin: 24px auto;
+}
+
+.memory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.memory-header h2,
+.memory-header p {
+  margin: 0 0 8px;
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.memory-card {
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 4px;
+  overflow: hidden;
+  border-color: var(--cyan);
+  color: var(--cyan);
+  font-size: clamp(20px, 5vw, 40px);
+  cursor: pointer;
+}
+
+.memory-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memory-card.is-matched {
+  border-color: var(--pink);
+  opacity: 0.72;
+}
+
+.memory-complete {
+  text-align: center;
+}
+
+.memory-back {
+  display: block;
+  margin: 20px auto;
+}
+
+@media (max-width: 600px) {
+  .memory-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .memory-header {
+    align-items: flex-start;
+  }
+}

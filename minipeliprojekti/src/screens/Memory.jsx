@@ -1,4 +1,5 @@
 import {useEffect, useRef, useState} from "react"
+import {useNavigate} from "react-router-dom"
 import kuva1 from "../assets/kuva1.png"
 import kuva2 from "../assets/kuva2.jpg"
 import kuva3 from "../assets/kuva3.jpg"
@@ -19,29 +20,30 @@ import kuva17 from "../assets/kuva17.png"
 import kuva18 from "../assets/kuva18.png"
 import kuva19 from "../assets/kuva19.jpg"
 import kuva20 from "../assets/kuva20.png"
- 
+
 const images = [
   kuva1, kuva2, kuva3, kuva4, kuva5,
   kuva6, kuva7, kuva8, kuva9, kuva10,
   kuva11, kuva12, kuva13, kuva14, kuva15,
   kuva16, kuva17, kuva18, kuva19, kuva20,
 ]
- 
+
 const createDeck = () => {
   const cards = images.flatMap((image, pair) => [
     {id: `${pair}-a`, pair, image},
     {id: `${pair}-b`, pair, image},
   ])
- 
+
   for (let index = cards.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
     ;[cards[index], cards[randomIndex]] = [cards[randomIndex], cards[index]]
   }
- 
+
   return cards
 }
- 
+
 const Memory = () => {
+  const navigate = useNavigate()
   const [cards, setCards] = useState(createDeck)
   const [selectedCards, setSelectedCards] = useState([])
   const [matchedCards, setMatchedCards] = useState([])
@@ -61,7 +63,67 @@ const Memory = () => {
     setMoves(0)
     setLocked(false)
   }
- 
+
+  const selectCard = (card) => {
+    if (locked || matchedCards.includes(card.id) || selectedCards.some((selected) => selected.id === card.id)) {
+      return
+    }
+
+    const nextSelectedCards = [...selectedCards, card]
+    setSelectedCards(nextSelectedCards)
+
+    if (selectedCards.length === 0) {
+      return
+    }
+
+    setMoves((currentMoves) => currentMoves + 1)
+    setLocked(true)
+
+    const isMatch = selectedCards[0].pair === card.pair
+    if (isMatch) {
+      setMatchedCards((currentMatches) => [...currentMatches, ...nextSelectedCards.map(({id}) => id)])
+    }
+
+    timeout.current = setTimeout(() => {
+      setSelectedCards([])
+      setLocked(false)
+    }, isMatch ? 500 : 1000)
+  }
+
+  return (
+    <main className="memory-game">
+      <header className="memory-header">
+        <div>
+          <h2>Muistipeli</h2>
+          <p>Siirrot: {moves} · Parit: {pairsFound}/{images.length}</p>
+        </div>
+        <button type="button" onClick={restartGame}>Aloita alusta</button>
+      </header>
+
+      {gameComplete && <p className="memory-complete">Kaikki parit löytyivät! Hienosti pelattu.</p>}
+
+      <div className="memory-grid">
+        {cards.map((card) => {
+          const revealed = selectedCards.some((selected) => selected.id === card.id) || matchedCards.includes(card.id)
+
+          return (
+            <button
+              key={card.id}
+              type="button"
+              className={`memory-card${revealed ? " is-revealed" : ""}${matchedCards.includes(card.id) ? " is-matched" : ""}`}
+              aria-label={revealed ? `Kuva ${card.pair + 1}` : "Käännä kortti"}
+              aria-pressed={revealed}
+              onClick={() => selectCard(card)}
+            >
+              {revealed ? <img src={card.image} alt="" /> : <span>?</span>}
+            </button>
+          )
+        })}
+      </div>
+
+      <button className="memory-back" type="button" onClick={() => navigate("/")}>Takaisin</button>
+    </main>
+  )
 }
  
 export default Memory
