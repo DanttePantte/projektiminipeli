@@ -1,11 +1,10 @@
 import Cell from "./Cell"
 
-const NumberRow = ({row}) => {
-  return (<div class="numberRow">
-    <Cell index={row*4}/>
-    <Cell index={row*4+1}/>
-    <Cell index={row*4+2}/>
-    <Cell index={row*4+3}/>
+const NumberRow = ({row, values}) => {
+  return (<div className="numberRow" role="row">
+    {values.map((value, column) => (
+      <Cell key={column} index={row * 4 + column} value={value}/>
+    ))}
   </div>
   )
 }

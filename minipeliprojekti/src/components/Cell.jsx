@@ -1,5 +1,9 @@
-const Cell = ({index}) => {
-  return (<div class="cell" id={index}></div>)
+const Cell = ({index, value}) => {
+  return (
+    <div className="cell" id={`cell-${index}`} role="gridcell" aria-label={value || "Tyhjä"}>
+      {value || ""}
+    </div>
+  )
 }
 
 export default Cell
