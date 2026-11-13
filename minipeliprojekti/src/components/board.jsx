@@ -12,6 +12,7 @@ const createGame = () => ({
 
 const Board = () => {
   const [game, setGame] = useState(createGame)
+  const [animationsEnabled, setAnimationsEnabled] = useState(true)
 
   useEffect(() => {
     const cleanup = createListener(setGame)
@@ -23,12 +24,20 @@ const Board = () => {
       <p class="scoreItem">Pisteet: {game.score}</p>
       {game.status === "won" && <p class="scoreItem">Voitit!</p>}
       {game.status === "over" && <p class="scoreItem">Peli päättyi.</p>}
+      <button
+        class="scoreItem"
+        type="button"
+        aria-pressed={animationsEnabled}
+        onClick={() => setAnimationsEnabled((enabled) => !enabled)}
+      >
+        Soluanimaatiot: {animationsEnabled ? "päällä" : "pois"}
+      </button>
       <button class="scoreItem" onClick={() => setGame(createGame())}>Aloita alusta</button>
       {game.status === "won" && <button class="scoreItem" onClick={() => {
         setGame((currentGame) => ({ ...currentGame, status: "freeplay" }))
       }}>Jatka peliä</button>}
     </div>
-    <div id="gameContainer" role="grid">
+    <div id="gameContainer" className={animationsEnabled ? "" : "no-cell-animations"} role="grid">
       {game.board.map((values, row) => (
         <NumberRow key={row} row={row} values={values} freshCells={game.freshCells}/>
       ))}
