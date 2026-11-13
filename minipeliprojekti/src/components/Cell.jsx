@@ -19,9 +19,7 @@ const getTileColor = (value) => {
 const Cell = ({index, value}) => {
   return (
     <div className={`cell${value ? ` ${getTileColor(value)}` : " 0"}`} 
-    id={`cell-${index}`} 
-    role="gridcell" 
-    aria-label={value || "Tyhjä"}>
+    id={`cell-${index}`}>
       {value || ""}
     </div>
   )

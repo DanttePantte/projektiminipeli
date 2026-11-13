@@ -11,3 +11,9 @@ const _2048 = () => {
 }
 
 export default _2048
+
+// With AI:
+// "Continue game" option
+// Event handler
+// Box glow styles
+// Some bugfixes
