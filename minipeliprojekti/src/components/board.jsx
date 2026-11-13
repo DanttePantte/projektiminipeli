@@ -7,7 +7,7 @@ import moveBoard from "../scripts/2048/moveBoard"
 import spawnTile from "../scripts/2048/spawnTile"
 
 const createGame = () => ({
-  board: createInitialBoard(false),
+  board: createInitialBoard(true),
   score: 0,
   status: "playing",
 })

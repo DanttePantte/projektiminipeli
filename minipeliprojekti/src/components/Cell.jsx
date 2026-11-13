@@ -1,5 +1,6 @@
 const getTileColor = (value) => {
   switch (value) {
+    case 0: return "transparent"
     case 2: return "lightblue"
     case 4: return "cyan"
     case 8: return "lightgreen"
@@ -11,13 +12,13 @@ const getTileColor = (value) => {
     case 512: return "magenta"
     case 1024: return "purple"
     case 2048: return "darkblue"
-    default: return "transparent"
+    default: return "extra"
   }
 }
 
 const Cell = ({index, value}) => {
   return (
-    <div className={`cell${value ? ` ${getTileColor(value)}` : ""}`} 
+    <div className={`cell${value ? ` ${getTileColor(value)}` : " 0"}`} 
     id={`cell-${index}`} 
     role="gridcell" 
     aria-label={value || "Tyhjä"}>

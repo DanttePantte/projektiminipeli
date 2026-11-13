@@ -9,7 +9,8 @@
   --_256: pink;
   --_512: magenta;
   --_1024: rgb(177, 8, 255);
-  --_2048: darkblue;
+  --_2048: blue;
+  --_9999: white;
 }
 
 h1 {
@@ -141,4 +142,11 @@ h1 {
   border-color: var(--_2048);
   box-shadow: 0px 0px 53px var(--_2048);
   text-shadow: 0px 0px 53px var(--_2048);
+}
+
+.extra {
+  color: var(--_9999);
+  border-color: var(--_9999);
+  box-shadow: 0px 0px 72.7px var(--_9999);
+  text-shadow: 0px 0px 72.7px var(--_9999);
 }
