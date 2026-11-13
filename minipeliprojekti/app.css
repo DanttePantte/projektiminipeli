@@ -21,7 +21,8 @@ h1 {
   display: block;
 }
 
-.gameButton, #startGame {
+.gameButton,
+#startGame {
   width: 80%;
   height: 33%;
   font-size: 30px;
@@ -140,7 +141,8 @@ h1 {
   display: block;
 }
 
-.gameButton, #startGame {
+.gameButton,
+#startGame {
   width: 80%;
   height: 33%;
   font-size: 30px;
@@ -171,7 +173,7 @@ h1 {
 #scoreDisplay {
   margin: auto;
   display: flex;
-  
+
 }
 
 .numberRow {
@@ -279,4 +281,21 @@ h1 {
   border-color: var(--_9999);
   box-shadow: 0px 0px 72.7px var(--_9999);
   text-shadow: 0px 0px 72.7px var(--_9999);
+}
+
+@keyframes expandMerged {
+  0% {
+    font-size: 25px;
+  };
+  50% {
+    font-size: 30px;
+  };
+  100% {
+    font-size: 25px;
+  }
+}
+
+.fresh {
+  animation-name: expandMerged;
+  animation-duration: 0.5s;
 }

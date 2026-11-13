@@ -5,6 +5,7 @@ import createListener from "../scripts/2048/createListener"
 
 const createGame = () => ({
   board: createInitialBoard(0),
+  freshCells: [],
   score: 0,
   status: "playing",
 })
@@ -29,7 +30,7 @@ const Board = () => {
     </div>
     <div id="gameContainer" role="grid">
       {game.board.map((values, row) => (
-        <NumberRow key={row} row={row} values={values}/>
+        <NumberRow key={row} row={row} values={values} freshCells={game.freshCells}/>
       ))}
     </div>
   </>)

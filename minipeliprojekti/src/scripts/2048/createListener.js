@@ -44,6 +44,7 @@ const createListener = (setGame) => {
 
       return {
         board,
+        freshCells: result.mergedCells,
         score: currentGame.score + result.score,
         status,
       }
