@@ -18,13 +18,15 @@ const Board = () => {
   }, [])
 
   return (<>
-    <p>Pisteet: {game.score}</p>
-    {game.status === "won" && <p>Voitit!</p>}
-    {game.status === "over" && <p>Peli päättyi.</p>}
-    <button onClick={() => setGame(createGame())}>Aloita alusta</button>
-    {game.status === "won" && <button onClick={() => {
-      setGame((currentGame) => ({ ...currentGame, status: "freeplay" }))
-    }}>Jatka peliä</button>}
+    <div id="scoreDisplay">
+      <p class="scoreItem">Pisteet: {game.score}</p>
+      {game.status === "won" && <p class="scoreItem">Voitit!</p>}
+      {game.status === "over" && <p class="scoreItem">Peli päättyi.</p>}
+      <button class="scoreItem" onClick={() => setGame(createGame())}>Aloita alusta</button>
+      {game.status === "won" && <button class="scoreItem" onClick={() => {
+        setGame((currentGame) => ({ ...currentGame, status: "freeplay" }))
+      }}>Jatka peliä</button>}
+    </div>
     <div id="gameContainer" role="grid">
       {game.board.map((values, row) => (
         <NumberRow key={row} row={row} values={values}/>

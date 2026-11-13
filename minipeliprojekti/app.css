@@ -17,6 +17,10 @@ h1 {
   text-align: center;
 }
 
+.scoreItem {
+  display: block;
+}
+
 .gameButton, #startGame {
   width: 80%;
   height: 33%;
@@ -42,6 +46,13 @@ h1 {
 #gameContainer {
   width: 400px;
   height: 400px;
+  margin: auto;
+}
+
+#scoreDisplay {
+  margin: auto;
+  display: flex;
+  
 }
 
 .numberRow {
