@@ -18,7 +18,7 @@ const getTileColor = (value) => {
 
 const Cell = ({index, value, fresh}) => {
   return (
-    <div className={`cell${value ? ` ${getTileColor(value)}` : " 0"}${fresh ? " fresh" : ""}`} 
+    <div className={`cell${value ? ` ${getTileColor(value)}` : " 0"}${fresh ? " cell-fresh" : ""}`} 
     id={`cell-${index}`}>
       {value || ""}
     </div>

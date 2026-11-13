@@ -17,3 +17,4 @@ export default _2048
 // Event handler
 // Box glow styles
 // Some bugfixes
+// Both animations
