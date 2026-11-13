@@ -1,5 +1,24 @@
+:root {
+  --_2: lightblue;
+  --_4: cyan;
+  --_8: lightgreen;
+  --_16: lightyellow;
+  --_32: yellow;
+  --_64: orange;
+  --_128: coral;
+  --_256: pink;
+  --_512: magenta;
+  --_1024: rgb(177, 8, 255);
+  --_2048: blue;
+  --_9999: white;
+}
+
 h1 {
   text-align: center;
+}
+
+.scoreItem {
+  display: block;
 }
 
 .gameButton, #startGame {
