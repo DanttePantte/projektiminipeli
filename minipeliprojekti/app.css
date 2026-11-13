@@ -196,6 +196,11 @@ h1 {
   transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
+#gameContainer.no-cell-animations .cell {
+  transition: none;
+  animation: none;
+}
+
 .cell-filled {
   box-shadow: var(--glow) var(--pink);
 }
