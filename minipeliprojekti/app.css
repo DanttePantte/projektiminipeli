@@ -456,3 +456,136 @@ h1 {
 .cell-fresh {
   animation: slideInTile 0.25s ease-out;
 }
+
+:root {
+  --_2: lightblue;
+  --_4: cyan;
+  --_8: lightgreen;
+  --_16: lightyellow;
+  --_32: yellow;
+  --_64: orange;
+  --_128: coral;
+  --_256: pink;
+  --_512: magenta;
+  --_1024: rgb(177, 8, 255);
+  --_2048: blue;
+  --_9999: white;
+}
+
+h1 {
+  text-align: center;
+}
+
+.scoreItem {
+  display: block;
+}
+
+.gameButton, #startGame {
+  width: 80%;
+  height: 33%;
+  font-size: 30px;
+  border: 7px double var(--red);
+}
+
+#mainContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+#mainLeft {
+  color: var(--blue);
+  width: 40%;
+}
+
+#mainRight {
+  color: var(--red);
+  width: 40%;
+}
+
+.memory-game {
+  width: min(900px, calc(100% - 32px));
+  margin: 24px auto;
+}
+
+.memory-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.memory-header h2,
+.memory-header p {
+  margin: 0 0 8px;
+}
+
+.memory-levels {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.memory-levels button {
+  flex: 1;
+  min-height: 42px;
+  margin: 0;
+  border-color: var(--blue);
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.memory-levels button.is-active {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.memory-card {
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 4px;
+  overflow: hidden;
+  border-color: var(--cyan);
+  color: var(--cyan);
+  font-size: clamp(20px, 5vw, 40px);
+  cursor: pointer;
+}
+
+.memory-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memory-card.is-matched {
+  border-color: var(--pink);
+  opacity: 0.72;
+}
+
+.memory-complete {
+  text-align: center;
+}
+
+.memory-back {
+  display: block;
+  margin: 20px auto;
+}
+
+@media (max-width: 600px) {
+  .memory-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .memory-header {
+    align-items: flex-start;
+  }
+}
