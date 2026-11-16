@@ -1,0 +1,176 @@
+:root {
+  --_2: lightblue;
+  --_4: cyan;
+  --_8: lightgreen;
+  --_16: lightyellow;
+  --_32: yellow;
+  --_64: orange;
+  --_128: coral;
+  --_256: pink;
+  --_512: magenta;
+  --_1024: rgb(177, 8, 255);
+  --_2048: blue;
+  --_9999: white;
+}
+
+.game-2048 h1 {
+  text-align: center;
+}
+
+.scoreItem {
+  display: block;
+  margin: 0;
+}
+
+#scoreDisplay {
+  width: min(500px, calc(100% - 24px));
+  margin: 16px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+#gameContainer {
+  width: min(440px, calc(100vw - 32px));
+  aspect-ratio: 1;
+  margin: 20px auto 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.numberRow {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+}
+
+.cell {
+  box-sizing: border-box;
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 1;
+  border: 5px double var(--pink);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(10, 19, 34, 0.92);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+  text-align: center;
+  font-size: clamp(16px, 6vw, 25px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+#gameContainer.no-cell-animations .cell {
+  transition: none;
+  animation: none;
+}
+
+.cell-filled {
+  box-shadow: var(--glow) var(--pink);
+}
+
+.lightblue {
+  color: var(--_2);
+  border-color: var(--_2);
+  box-shadow: 0 0 13px var(--_2);
+  text-shadow: 0 0 13px var(--_2);
+}
+
+.cyan {
+  color: var(--_4);
+  border-color: var(--_4);
+  box-shadow: 0 0 17px var(--_4);
+  text-shadow: 0 0 17px var(--_4);
+}
+
+.lightgreen {
+  color: var(--_8);
+  border-color: var(--_8);
+  box-shadow: 0 0 21px var(--_8);
+  text-shadow: 0 0 21px var(--_8);
+}
+
+.lightyellow {
+  color: var(--_16);
+  border-color: var(--_16);
+  box-shadow: 0 0 25px var(--_16);
+  text-shadow: 0 0 25px var(--_16);
+}
+
+.yellow {
+  color: var(--_32);
+  border-color: var(--_32);
+  box-shadow: 0 0 29px var(--_32);
+  text-shadow: 0 0 29px var(--_32);
+}
+
+.orange {
+  color: var(--_64);
+  border-color: var(--_64);
+  box-shadow: 0 0 33px var(--_64);
+  text-shadow: 0 0 33px var(--_64);
+}
+
+.red {
+  color: var(--_128);
+  border-color: var(--_128);
+  box-shadow: 0 0 37px var(--_128);
+  text-shadow: 0 0 37px var(--_128);
+}
+
+.pink {
+  color: var(--_256);
+  border-color: var(--_256);
+  box-shadow: 0 0 41px var(--_256);
+  text-shadow: 0 0 41px var(--_256);
+}
+
+.magenta {
+  color: var(--_512);
+  border-color: var(--_512);
+  box-shadow: 0 0 45px var(--_512);
+  text-shadow: 0 0 45px var(--_512);
+}
+
+.purple {
+  color: var(--_1024);
+  border-color: var(--_1024);
+  box-shadow: 0 0 49px var(--_1024);
+  text-shadow: 0 0 49px var(--_1024);
+}
+
+.darkblue {
+  color: var(--_2048);
+  border-color: var(--_2048);
+  box-shadow: 0 0 53px var(--_2048);
+  text-shadow: 0 0 53px var(--_2048);
+}
+
+.extra {
+  color: var(--_9999);
+  border-color: var(--_9999);
+  box-shadow: 0 0 72.7px var(--_9999);
+  text-shadow: 0 0 72.7px var(--_9999);
+}
+
+@keyframes slideInTile {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cell-fresh {
+  animation: slideInTile 0.25s ease-out;
+}

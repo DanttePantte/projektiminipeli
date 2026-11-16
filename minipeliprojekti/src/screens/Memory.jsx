@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react"
 import {useNavigate} from "react-router-dom"
+import "../styles/memory.css"
 import kuva1 from "../assets/kuva1.png"
 import kuva2 from "../assets/kuva2.jpg"
 import kuva3 from "../assets/kuva3.jpg"

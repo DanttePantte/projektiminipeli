@@ -2,6 +2,7 @@ import {useState} from "react"
 import {useNavigate} from "react-router-dom"
 import MainLeft from "../components/MainLeft"
 import MainRight from "../components/MainRight"
+import "../styles/mainpage.css"
 
 const Main = () => {
   const [selectedGame, setGame] = useState("2048")

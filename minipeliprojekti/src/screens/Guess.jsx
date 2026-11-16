@@ -1,5 +1,6 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
+import "../styles/guess.css"
 
 const difficulties = [
   {id: "easy", label: "Helppo", max: 50},
@@ -62,15 +63,15 @@ const Guess = () => {
   }
 //
   return (
-    <main class="guess-game">
+    <main className="guess-game">
       <h2>Arvaa numero</h2>
 
-      <div class="guess-levels" role="group" aria-label="Vaikeustaso">
+      <div className="guess-levels" role="group" aria-label="Vaikeustaso">
         {difficulties.map(({id, label}) => (
           <button
             key={id}
             type="button"
-            class={difficulty === id ? "is-active" : ""}
+            className={difficulty === id ? "is-active" : ""}
             aria-pressed={difficulty === id}
             onClick={() => startNewGame(id)}
           >{label}
@@ -80,7 +81,7 @@ const Guess = () => {
 
       <p>Arvauksia: {attempts}</p>
 
-      <form class="guess-form" onSubmit={handleGuess}>
+      <form className="guess-form" onSubmit={handleGuess}>
         <label htmlFor="guess-number">Arvaa luku</label>
         <input
           id="guess-number"

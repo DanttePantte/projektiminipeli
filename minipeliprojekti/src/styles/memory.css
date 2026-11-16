@@ -1,0 +1,98 @@
+.memory-game {
+  width: min(900px, calc(100% - 32px));
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.memory-header {
+  width: min(100%, 760px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.memory-header h2,
+.memory-header p {
+  margin: 0 0 8px;
+}
+
+.memory-levels {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.memory-levels button {
+  min-height: 42px;
+  margin: 0;
+  border-color: var(--blue);
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.memory-levels button.is-active {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.memory-grid {
+  width: min(100%, 760px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  justify-items: center;
+}
+
+.memory-card {
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 4px;
+  overflow: hidden;
+  border-color: var(--cyan);
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(88, 224, 255, 0.9);
+  font-size: clamp(20px, 5vw, 40px);
+  cursor: pointer;
+}
+
+.memory-card span {
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(88, 224, 255, 0.9);
+  font-weight: 700;
+}
+
+.memory-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memory-card.is-matched {
+  border-color: var(--pink);
+  opacity: 0.72;
+}
+
+.memory-complete {
+  text-align: center;
+}
+
+.memory-back {
+  display: block;
+  margin: 20px auto;
+}
+
+@media (max-width: 600px) {
+  .memory-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+  }
+}
