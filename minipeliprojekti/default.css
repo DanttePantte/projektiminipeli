@@ -15,6 +15,10 @@
     --glow: 0px 0px var(--glowStrength);
 }
 
+* {
+    text-shadow: var(--glow) currentColor;
+}
+
 input, button {
     background-color: transparent;
     border-style: double;
@@ -25,11 +29,13 @@ input, button {
 
 input {
     border-color: var(--cyan);
+    box-shadow: var(--glow) var(--cyan);
     text-shadow: var(--glow) var(--cyan);
 }
 
 button {
     border-color: var(--red);
+    box-shadow: var(--glow) var(--red);
     text-shadow: var(--glow) var(--red);
 }
 

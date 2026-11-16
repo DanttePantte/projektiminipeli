@@ -23,13 +23,17 @@
   min-height: 42px;
   margin: 0;
   border-color: var(--blue);
+  box-shadow: var(--glow) var(--blue);
   color: var(--blue);
+  text-shadow: var(--glow) var(--blue);
   cursor: pointer;
 }
 
 .guess-levels button.is-active {
   border-color: var(--pink);
+  box-shadow: var(--glow) var(--pink);
   color: var(--pink);
+  text-shadow: var(--glow) var(--pink);
 }
 
 .guess-form {

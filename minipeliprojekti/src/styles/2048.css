@@ -55,6 +55,7 @@
   min-width: 0;
   aspect-ratio: 1;
   border: 5px double var(--pink);
+  box-shadow: var(--glow) var(--pink);
   margin: 0;
   padding: 0;
   display: flex;

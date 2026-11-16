@@ -24,6 +24,7 @@
   height: 33%;
   font-size: 30px;
   border: 7px double var(--red);
+  box-shadow: var(--glow) var(--red);
 }
 
 @media (max-width: 600px) {

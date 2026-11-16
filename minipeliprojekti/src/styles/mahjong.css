@@ -44,7 +44,7 @@
   padding: 8px;
   border: 2px solid var(--cyan);
   background: #102b2b;
-  box-shadow: 0 0 18px #3fddf144;
+  box-shadow: var(--glow) var(--cyan);
 }
 
 .mahjong-tile {
@@ -99,7 +99,7 @@
 
 .mahjong-tile.is-free {
   border-color: #ff7ac6;
-  box-shadow: 0 0 16px rgba(255, 122, 198, 0.9), 0 3px 0 #5f5137;
+  box-shadow: var(--glow) #ff7ac6, 0 3px 0 #5f5137;
 }
 
 .mahjong-tile:not(:disabled):hover {
@@ -111,7 +111,8 @@
   border-color: var(--cyan);
   background: transparent;
   color: var(--cyan);
-  box-shadow: 0 0 16px var(--cyan), 0 3px 0 #5f5137;
+  text-shadow: var(--glow) var(--cyan);
+  box-shadow: var(--glow) var(--cyan), 0 3px 0 #5f5137;
 }
 
 .mahjong-tile.is-blocked:not(.is-removed) {
