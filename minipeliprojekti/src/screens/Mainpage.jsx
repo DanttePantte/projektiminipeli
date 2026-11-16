@@ -11,6 +11,7 @@ const Main = () => {
     "Muistipeli": "/memory",
     "Arvaa numero": "/guess",
     "2048": "/2048",
+    "Mahjong": "/mahjong",
   }
 
   return (<div id="mainContainer">

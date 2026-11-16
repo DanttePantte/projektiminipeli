@@ -4,6 +4,7 @@ import Main from "./screens/Mainpage"
 import Memory from "./screens/Memory"
 import Guess from "./screens/Guess"
 import _2048 from "./screens/2048"
+import Mahjong from "./screens/Mahjong"
 
 const App = () => {
   return (
@@ -23,6 +24,9 @@ const App = () => {
         }/>
         <Route path="/2048" element={
           <_2048/>
+        }/>
+        <Route path="/mahjong" element={
+          <Mahjong/>
         }/>
       </Routes>
     </>

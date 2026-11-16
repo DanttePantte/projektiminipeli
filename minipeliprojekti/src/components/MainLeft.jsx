@@ -6,6 +6,7 @@ const MainLeft = ({setGame, setRules}) => {
       <GameButton text="Muistipeli" setGame={setGame} setRules={setRules}/>
       <GameButton text="Arvaa numero" setGame={setGame} setRules={setRules}/>
       <GameButton text="2048" setGame={setGame} setRules={setRules}/>
+      <GameButton text="Mahjong" setGame={setGame} setRules={setRules}/>
     </div>
   )
 }
