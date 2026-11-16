@@ -42,7 +42,7 @@ const Guess = () => {
       setFeedback("Syötä numero!")
       return
     }
-
+// tälyllä tehty
     if (nextGuess < 1 || nextGuess > activeDifficulty.max) {
       setFeedback(`Syötä luku väliltä 1-${activeDifficulty.max}.`)
       return
@@ -57,5 +57,51 @@ const Guess = () => {
       return
     }
 
-  
+    setGuess("")
+    setFeedback(nextGuess < number ? "Liian pieni!" : "Liian suuri!")
+  }
+//
+  return (
+    <main class="guess-game">
+      <h2>Arvaa numero</h2>
+
+      <div class="guess-levels" role="group" aria-label="Vaikeustaso">
+        {difficulties.map(({id, label}) => (
+          <button
+            key={id}
+            type="button"
+            class={difficulty === id ? "is-active" : ""}
+            aria-pressed={difficulty === id}
+            onClick={() => startNewGame(id)}
+          >{label}
+          </button>
+        ))}
+      </div>
+
+      <p>Arvauksia: {attempts}</p>
+
+      <form class="guess-form" onSubmit={handleGuess}>
+        <label htmlFor="guess-number">Arvaa luku</label>
+        <input
+          id="guess-number"
+          type="number"
+          min="1"
+          max={activeDifficulty.max}
+          value={guess}
+          onChange={(event) => setGuess(event.target.value)}
+          disabled={isWon}
+        />
+        <button type="submit" disabled={isWon || guess === ""}>Arvaa</button>
+      </form>
+
+      <p className="guess-feedback">{feedback}</p>
+
+      <div className="guess-actions">
+        <button type="button" onClick={() => startNewGame()}>Uusi peli</button>
+        <button type="button" onClick={() => navigate("/")}>Takaisin</button>
+      </div>
+    </main>
+  )
+}
+
 export default Guess
