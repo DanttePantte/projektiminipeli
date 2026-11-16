@@ -6,7 +6,7 @@ const GameButton = ({text, setGame, setRules}) => {
     setRules(rules[text])
   }
   return (
-    <button class="gameButton"
+    <button className="gameButton"
     onClick={()=>handleClick()}>{text}</button>
   )
 }

@@ -21,19 +21,19 @@ const Board = () => {
 
   return (<>
     <div id="scoreDisplay">
-      <p class="scoreItem">Pisteet: {game.score}</p>
-      {game.status === "won" && <p class="scoreItem">Voitit!</p>}
-      {game.status === "over" && <p class="scoreItem">Peli päättyi.</p>}
+      <p className="scoreItem">Pisteet: {game.score}</p>
+      {game.status === "won" && <p className="scoreItem">Voitit!</p>}
+      {game.status === "over" && <p className="scoreItem">Peli päättyi.</p>}
       <button
-        class="scoreItem"
+        className="scoreItem"
         type="button"
         aria-pressed={animationsEnabled}
         onClick={() => setAnimationsEnabled((enabled) => !enabled)}
       >
         Soluanimaatiot: {animationsEnabled ? "päällä" : "pois"}
       </button>
-      <button class="scoreItem" onClick={() => setGame(createGame())}>Aloita alusta</button>
-      {game.status === "won" && <button class="scoreItem" onClick={() => {
+      <button className="scoreItem" onClick={() => setGame(createGame())}>Aloita alusta</button>
+      {game.status === "won" && <button className="scoreItem" onClick={() => {
         setGame((currentGame) => ({ ...currentGame, status: "freeplay" }))
       }}>Jatka peliä</button>}
     </div>
