@@ -21,7 +21,7 @@ import kuva17 from "../assets/kuva17.png"
 import kuva18 from "../assets/kuva18.png"
 import kuva19 from "../assets/kuva19.jpg"
 import kuva20 from "../assets/kuva20.png"
-
+moro
 const images = [
   kuva1, kuva2, kuva3, kuva4, kuva5,
   kuva6, kuva7, kuva8, kuva9, kuva10,
@@ -73,7 +73,7 @@ const Memory = () => {
     setMoves(0)
     setLocked(false)
   }
-
+ 
   const selectCard = (card) => {
     if (locked || matchedCards.includes(card.id) || selectedCards.some((selected) => selected.id === card.id)) {
       return
