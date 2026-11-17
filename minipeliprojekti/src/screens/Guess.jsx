@@ -43,7 +43,7 @@ const Guess = () => {
       setFeedback("Syötä numero!")
       return
     }
-// tälyllä tehty
+// tälyllä tehty joo
     if (nextGuess < 1 || nextGuess > activeDifficulty.max) {
       setFeedback(`Syötä luku väliltä 1-${activeDifficulty.max}.`)
       return
