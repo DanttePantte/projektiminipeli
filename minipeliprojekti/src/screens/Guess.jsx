@@ -1,5 +1,6 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
+import GameResults from "../components/GameResults"
 import "../styles/guess.css"
 
 const difficulties = [
@@ -19,6 +20,8 @@ const Guess = () => {
   const [attempts, setAttempts] = useState(0)
   const [feedback, setFeedback] = useState("Arvaa numero!")
   const [isWon, setIsWon] = useState(false)
+  const [score, setScore] = useState(0)
+  const [round, setRound] = useState(0)
 
   const startNewGame = (nextDifficulty = difficulty) => {
     const selectedDifficulty = difficulties.find(({id}) => id === nextDifficulty) ?? activeDifficulty
@@ -28,6 +31,8 @@ const Guess = () => {
     setAttempts(0)
     setFeedback("Arvaa numero!")
     setIsWon(false)
+    setScore(0)
+    setRound((currentRound) => currentRound + 1)
   }
 
   const handleGuess = (event) => {
@@ -55,6 +60,7 @@ const Guess = () => {
     if (nextGuess === number) {
       setFeedback(`Oikein! Arvasit numeron ${number} ${nextAttempts} yrityksellä.`)
       setIsWon(true)
+      setScore(Math.round(10000 / nextAttempts))
       return
     }
 
@@ -101,6 +107,8 @@ const Guess = () => {
         <button type="button" onClick={() => startNewGame()}>Uusi peli</button>
         <button type="button" onClick={() => navigate("/")}>Takaisin</button>
       </div>
+
+      <GameResults game="guess" score={score} complete={isWon} round={round} />
     </main>
   )
 }

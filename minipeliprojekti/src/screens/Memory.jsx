@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState} from "react"
 import {useNavigate} from "react-router-dom"
+import GameResults from "../components/GameResults"
 import "../styles/memory.css"
 import kuva1 from "../assets/kuva1.png"
 import kuva2 from "../assets/kuva2.jpg"
@@ -57,6 +58,7 @@ const Memory = () => {
   const [selectedCards, setSelectedCards] = useState([])
   const [matchedCards, setMatchedCards] = useState([])
   const [moves, setMoves] = useState(0)
+  const [round, setRound] = useState(0)
   const [locked, setLocked] = useState(false)
   const timeout = useRef(null)
   const pairsFound = matchedCards.length / 2
@@ -72,6 +74,7 @@ const Memory = () => {
     setMatchedCards([])
     setMoves(0)
     setLocked(false)
+    setRound((currentRound) => currentRound + 1)
   }
  
   const selectCard = (card) => {
@@ -146,6 +149,12 @@ const Memory = () => {
       </div>
 
       <button className="memory-back" type="button" onClick={() => navigate("/")}>Takaisin</button>
+      <GameResults
+        game="memory"
+        score={Math.round((10000 * activeDifficulty.pairs) / Math.max(moves, 1))}
+        complete={gameComplete}
+        round={round}
+      />
     </main>
   )
 }

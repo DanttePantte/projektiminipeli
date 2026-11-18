@@ -1,5 +1,6 @@
 import {useState} from "react"
 import {useNavigate} from "react-router-dom"
+import GameResults from "../components/GameResults"
 import "../styles/mahjong.css"
 
 const tileFaces = [
@@ -129,6 +130,7 @@ const Mahjong = () => {
   const [hint, setHint] = useState([])
   const [message, setMessage] = useState("Valitse kaksi samanlaista vapaata laattaa.")
   const [moves, setMoves] = useState(0)
+  const [round, setRound] = useState(0)
   const freeTiles = getFreeTiles(tiles, removed)
   const remainingPairs = (tiles.length - removed.size) / 2
 
@@ -139,6 +141,7 @@ const Mahjong = () => {
     setHint([])
     setMessage("Valitse kaksi samanlaista vapaata laattaa.")
     setMoves(0)
+    setRound((currentRound) => currentRound + 1)
   }
 
   const selectTile = (tile) => {
@@ -250,6 +253,12 @@ const Mahjong = () => {
       </div>
 
       <button className="mahjong-back" type="button" onClick={() => navigate("/")}>Takaisin</button>
+      <GameResults
+        game="mahjong"
+        score={Math.round((10000 * (tiles.length / 2)) / Math.max(moves, 1))}
+        complete={remainingPairs === 0}
+        round={round}
+      />
     </main>
   )
 }
