@@ -1,7 +1,8 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
 import getMines from "../scripts/minesweeper/getMines"
 import getNumber from "../scripts/minesweeper/getNumber"
+import get3BV, {calculateSolved3BV} from "../scripts/minesweeper/get3BV"
 import "../styles/minesweeper.css"
 
 const DIFFICULTIES = {
@@ -18,7 +19,30 @@ const createGame = () => ({
   flagged: new Set(),
   status: "ready",
   exploded: null,
+  startedAt: null,
+  elapsedSeconds: 0,
+  clicks: 0,
+  score3BV: 0,
+  score: 0,
 })
+
+const calculateScore = (threeBV, elapsedSeconds, mineCount, width, height, clicks) => {
+  const time = Math.max(1, elapsedSeconds)
+  const validClicks = Math.max(1, clicks)
+  const density = mineCount / (height / width)
+
+  const speed = (threeBV / time)
+  const efficiency = (threeBV / validClicks)
+  const difficulty = (density * 25) ** 2
+
+  console.log(`Speed: ${speed}\nEfficiency: ${efficiency}\nDifficulty: ${difficulty}`)
+
+  return Math.round(
+    ((threeBV / time) ** 4)
+    * ((threeBV / validClicks) ** 3)
+    * ((density * 25) ** 2)
+  )
+}
 
 const Minesweeper = () => {
   const navigate = useNavigate()
@@ -51,6 +75,10 @@ const Minesweeper = () => {
   const revealCell = (id) => {
     if (game.status === "won" || game.status === "lost") return
 
+    const now = Date.now()
+    const startedAt = game.startedAt ?? now
+    const elapsedSeconds = Math.max(1, Math.floor((now - startedAt) / 1000))
+    const clicks = game.clicks + 1
     const mines = game.mines ?? getMines(WIDTH, HEIGHT, MINE_COUNT, id)
 
     // Clicking an open numbered cell reveals its unopened neighbors when
@@ -65,7 +93,7 @@ const Minesweeper = () => {
       )
       const revealedMine = neighbors.find((neighbor) => mines.includes(neighbor))
       if (revealedMine !== undefined) {
-        setGame({...game, mines, status: "lost", exploded: revealedMine})
+        finishLoss(game.revealed, mines, revealedMine, startedAt, elapsedSeconds, clicks)
         return
       }
 
@@ -84,15 +112,18 @@ const Minesweeper = () => {
         }
       }
 
-      const status = revealed.size === CELL_COUNT - MINE_COUNT ? "won" : "playing"
-      setGame({...game, mines, revealed, status})
+      if (revealed.size === CELL_COUNT - MINE_COUNT) {
+        finishWin(revealed, mines, startedAt, elapsedSeconds, clicks)
+      } else {
+        setGame({...game, mines, revealed, status: "playing", startedAt, elapsedSeconds, clicks})
+      }
       return
     }
 
     if (game.flagged.has(id)) return
 
     if (mines.includes(id)) {
-      setGame({...game, mines, status: "lost", exploded: id})
+      finishLoss(game.revealed, mines, id, startedAt, elapsedSeconds, clicks)
       return
     }
 
@@ -112,7 +143,7 @@ const Minesweeper = () => {
     }
 
     const status = revealed.size === CELL_COUNT - MINE_COUNT ? "won" : "playing"
-    setGame({...game, mines, revealed, status})
+    setGame({...game, mines, revealed, status, startedAt, elapsedSeconds, clicks})
   }
 
   const toggleFlag = (event, id) => {
@@ -125,20 +156,87 @@ const Minesweeper = () => {
     } else if (flagged.size < MINE_COUNT) {
       flagged.add(id)
     }
-    setGame({...game, flagged, status: game.mines ? "playing" : "ready"})
+
+    setGame({...game, flagged, clicks: game.clicks + 1})
   }
 
   const quit = () => {
     if (window.confirm("Lopetetaanko peli?")) navigate("/")
   }
 
+  const finishWin = (revealed, mines, startedAt, elapsedSeconds, clicks) => {
+    const threeBV = get3BV(WIDTH, HEIGHT, mines)
+    const finalElapsed = Math.max(1, elapsedSeconds)
+    const score = calculateScore(threeBV, finalElapsed, MINE_COUNT, WIDTH, HEIGHT, clicks)
+
+    setGame((current) => ({
+      ...current,
+      mines,
+      revealed,
+      status: "won",
+      elapsedSeconds: finalElapsed,
+      startedAt,
+      clicks,
+      score3BV: threeBV,
+      score,
+    }))
+  }
+
+  const finishLoss = (revealed, mines, exploded, startedAt, elapsedSeconds, clicks) => {
+    const threeBV = get3BV(WIDTH, HEIGHT, mines)
+    const solved3BV = calculateSolved3BV(WIDTH, HEIGHT, mines, revealed)
+    const finalElapsed = Math.max(1, elapsedSeconds)
+    const baseScore = calculateScore(solved3BV, finalElapsed, MINE_COUNT, WIDTH, HEIGHT, clicks)
+    const min3BV = ()=>{
+      const cells = WIDTH * HEIGHT
+      if (cells < 150) {
+        return 0.4
+      } else if (cells < 250) {
+        return 0.3
+      } else if (cells < 350) {
+        return 0.2
+      } else if (cells < 375) {
+        return 0.15
+      } else {
+        return 0.1
+      }
+    }
+    const completionMultiplier = Math.max((solved3BV / threeBV - min3BV()), 0)
+
+    setGame((current) => ({
+      ...current,
+      mines,
+      revealed,
+      status: "lost",
+      exploded,
+      elapsedSeconds: finalElapsed,
+      startedAt,
+      clicks,
+      score3BV: solved3BV,
+      score: Math.round(baseScore * completionMultiplier),
+    }))
+  }
+
   const statusText = game.status === "won"
-    ? "Voitit! Kaikki turvalliset ruudut on avattu."
+    ? `Voitit! 3BV: ${game.score3BV}, pisteet: ${game.score.toLocaleString("fi-FI")}`
     : game.status === "lost"
-      ? "Osuit miinaan. Aloita uusi peli ja yritä uudelleen."
+      ? `Osuit miinaan. Ratkaistu 3BV: ${game.score3BV}, pisteet: ${game.score.toLocaleString("fi-FI")}`
       : game.status === "ready"
         ? "Avaa ruutu aloittaaksesi. Ensimmäinen klikkaus on turvallinen."
         : "Etsi kaikki miinat."
+
+  useEffect(() => {
+    if (!game.startedAt || game.status === "won" || game.status === "lost") return
+
+    const timer = window.setInterval(() => {
+      setGame((current) => ({
+        ...current,
+        elapsedSeconds: Math.max(1, Math.floor((Date.now() - current.startedAt) / 1000)),
+      }))
+    }, 1000)
+
+    return () => window.clearInterval(timer)
+  }, [game.startedAt, game.status])
 
   return (
     <main className="minesweeper-game" style={{
@@ -153,6 +251,8 @@ const Minesweeper = () => {
           <span className="minesweeper-counter" aria-label={`${remainingMines} miinaa jäljellä`}>
             Miinoja: {remainingMines}
           </span>
+          <span className="minesweeper-counter">Aika: {game.elapsedSeconds}s</span>
+          <span className="minesweeper-counter">Klikkaukset: {game.clicks}</span>
           <button type="button" onClick={() => startNewGame()}>Uusi peli</button>
           <button type="button" onClick={quit}>Lopeta</button>
         </div>

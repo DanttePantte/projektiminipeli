@@ -1,82 +1,141 @@
-const getGrid = (mines, w, h) => {
+const getGrid = (mines, width, height) => {
+  const mineSet = new Set(mines)
   const grid = []
-  for (let y = 0; y < h; y++) {
-    const row = []
-    for (let x = 0; x < w; x++) {
-      if (mines.includes(w * y + x)) {
-        row.push(-1)
-      } else {
-        row.push(0)
+
+  for (let row = 0; row < height; row++) {
+    const gridRow = []
+
+    for (let column = 0; column < width; column++) {
+      const id = row * width + column
+      if (mineSet.has(id)) {
+        gridRow.push(-1)
+        continue
       }
+
+      let adjacentMines = 0
+      for (let nextRow = Math.max(0, row - 1); nextRow <= Math.min(height - 1, row + 1); nextRow++) {
+        for (let nextColumn = Math.max(0, column - 1); nextColumn <= Math.min(width - 1, column + 1); nextColumn++) {
+          if (mineSet.has(nextRow * width + nextColumn)) adjacentMines++
+        }
+      }
+
+      gridRow.push(adjacentMines)
     }
-    grid.push(row)
+
+    grid.push(gridRow)
   }
+
   return grid
 }
 
-const get3BV = (w, h, mines) => {
-  const board = getGrid(mines, w, h)
-  const rows = board.length
-  const cols = board[0].length
-  const grid = Array.from({ length: rows }, () => Array(cols).fill(0))
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (board[r][c] === -1) {
-        grid[r][c] = -1
-        continue
-      }
-      let minesCount = 0;
-      for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
-          const nr = r + dc
-          const nc = c + dc;
-          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc] === -1) {
-            minesCount++
-          }
-        }
-      }
-      grid[r][c] = minesCount
-    }
-  }
-  const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
-  let score3BV = 0;
-  function floodFillZero(startR, startC) {
-    const queue = [[startR, startC]];
-    visited[startR][startC] = true;
-    while (queue.length > 0) {
-      const [r, c] = queue.shift();
-      for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
-          const nr = r + dr;
-          const nc = c + dc;
-          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !visited[nr][nc] && grid[nr][nc] !== -1) {
-            visited[nr][nc] = true;
-            if (grid[nr][nc] === 0) {
-              queue.push([nr, nc]);
-            }
-          }
-        }
-      }
-    }
-  }
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (grid[r][c] === 0 && !visited[r][c]) {
-        score3BV++;
-        floodFillZero(r, c);
-      }
-    }
-  }
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (grid[r][c] > 0 && !visited[r][c]) {
-        score3BV++;
-        visited[r][c] = true;
+const getNeighbors = (row, column, width, height) => {
+  const neighbors = []
+
+  for (let nextRow = Math.max(0, row - 1); nextRow <= Math.min(height - 1, row + 1); nextRow++) {
+    for (let nextColumn = Math.max(0, column - 1); nextColumn <= Math.min(width - 1, column + 1); nextColumn++) {
+      if (nextRow !== row || nextColumn !== column) {
+        neighbors.push([nextRow, nextColumn])
       }
     }
   }
 
-  return score3BV;
+  return neighbors
 }
 
-export default get3BV
+const touchesZero = (row, column, grid) => {
+  const height = grid.length
+  const width = grid[0].length
+
+  return getNeighbors(row, column, width, height).some(([nextRow, nextColumn]) =>
+    grid[nextRow][nextColumn] === 0
+  )
+}
+
+const calculate3BV = (width, height, mines) => {
+  const grid = getGrid(mines, width, height)
+  const visited = Array.from({length: height}, () => Array(width).fill(false))
+  let value = 0
+
+  for (let row = 0; row < height; row++) {
+    for (let column = 0; column < width; column++) {
+      if (grid[row][column] !== 0 || visited[row][column]) continue
+
+      value++
+      const queue = [[row, column]]
+      visited[row][column] = true
+
+      while (queue.length) {
+        const [currentRow, currentColumn] = queue.shift()
+
+        for (const [nextRow, nextColumn] of getNeighbors(currentRow, currentColumn, width, height)) {
+          if (!visited[nextRow][nextColumn] && grid[nextRow][nextColumn] === 0) {
+            visited[nextRow][nextColumn] = true
+            queue.push([nextRow, nextColumn])
+          }
+        }
+      }
+    }
+  }
+
+  for (let row = 0; row < height; row++) {
+    for (let column = 0; column < width; column++) {
+      if (grid[row][column] > 0 && !touchesZero(row, column, grid)) {
+        value++
+      }
+    }
+  }
+
+  return value
+}
+
+export const calculateSolved3BV = (width, height, mines, revealed) => {
+  const grid = getGrid(mines, width, height)
+  const mineSet = new Set(mines)
+  const visited = Array.from({length: height}, () => Array(width).fill(false))
+  let resolved = 0
+
+  for (let row = 0; row < height; row++) {
+    for (let column = 0; column < width; column++) {
+      if (grid[row][column] !== 0 || visited[row][column]) continue
+
+      const queue = [[row, column]]
+      let containsRevealed = false
+      visited[row][column] = true
+
+      while (queue.length) {
+        const [currentRow, currentColumn] = queue.shift()
+
+        if (revealed.has(currentRow * width + currentColumn)) {
+          containsRevealed = true
+        }
+
+        for (const [nextRow, nextColumn] of getNeighbors(currentRow, currentColumn, width, height)) {
+          if (!visited[nextRow][nextColumn] && grid[nextRow][nextColumn] === 0) {
+            visited[nextRow][nextColumn] = true
+            queue.push([nextRow, nextColumn])
+          }
+        }
+      }
+
+      if (containsRevealed) resolved++
+    }
+  }
+
+  for (let row = 0; row < height; row++) {
+    for (let column = 0; column < width; column++) {
+      const id = row * width + column
+      if (
+        grid[row][column] > 0
+        && !touchesZero(row, column, grid)
+        && !mineSet.has(id)
+        && revealed.has(id)
+      ) {
+        resolved++
+      }
+    }
+  }
+
+  return resolved
+}
+
+export default calculate3BV
