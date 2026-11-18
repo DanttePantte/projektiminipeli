@@ -27,6 +27,7 @@ const createGame = () => ({
 })
 
 const calculateScore = (threeBV, elapsedSeconds, mineCount, width, height, clicks) => {
+  console.log("Calculating score...")
   const time = Math.max(1, elapsedSeconds)
   const validClicks = Math.max(1, clicks)
   const density = mineCount / (height / width)
@@ -111,6 +112,7 @@ const Minesweeper = () => {
           })
         }
       }
+      console.log(revealed.size, CELL_COUNT - MINE_COUNT)
 
       if (revealed.size === CELL_COUNT - MINE_COUNT) {
         finishWin(revealed, mines, startedAt, elapsedSeconds, clicks)
@@ -143,7 +145,11 @@ const Minesweeper = () => {
     }
 
     const status = revealed.size === CELL_COUNT - MINE_COUNT ? "won" : "playing"
-    setGame({...game, mines, revealed, status, startedAt, elapsedSeconds, clicks})
+    if (status === "won") {
+      finishWin(revealed, mines, startedAt, elapsedSeconds, clicks)
+    } else {
+      setGame({...game, mines, revealed, status, startedAt, elapsedSeconds, clicks})
+    }
   }
 
   const toggleFlag = (event, id) => {
@@ -272,25 +278,34 @@ const Minesweeper = () => {
         ))}
       </div>
 
-      <div className="minesweeper-board" role="grid" aria-label="Miinaharavan pelilauta" style={{
-        "--board-columns": WIDTH
-      }}>
+      <div
+        className="minesweeper-board"
+        role="grid"
+        aria-label="Miinaharavan pelilauta"
+        style={{"--board-columns": WIDTH}}
+        onContextMenu={(event) => event.preventDefault()}
+      >
         {Array.from({length: CELL_COUNT}, (_, id) => {
           const isRevealed = game.revealed.has(id)
           const isFlagged = game.flagged.has(id)
           const isMine = game.mines?.includes(id) ?? false
           const showMine = isMine && (game.status === "lost" || isRevealed)
           const number = game.mines && !isMine ? getNumber(id, WIDTH, HEIGHT, game.mines) : null
+          const row = Math.floor(id / WIDTH)
+          const column = id % WIDTH
+          const boundaryClasses = `${row > 0 && isRevealed !== game.revealed.has(id - WIDTH) ? " boundary-top" : ""}${column < WIDTH - 1 && isRevealed !== game.revealed.has(id + 1) ? " boundary-right" : ""}${row < HEIGHT - 1 && isRevealed !== game.revealed.has(id + WIDTH) ? " boundary-bottom" : ""}${column > 0 && isRevealed !== game.revealed.has(id - 1) ? " boundary-left" : ""}`
 
           return (
             <button
               key={id}
               type="button"
               role="gridcell"
-              className={`minesweeper-cell${isRevealed ? " is-revealed" : ""}${isFlagged ? " is-flagged" : ""}${showMine ? " is-mine" : ""}${game.exploded === id ? " is-exploded" : ""}${number > 0 && isRevealed ? ` number-${number}` : ""}`}
+              className={`minesweeper-cell${isRevealed ? " is-revealed" : ""}${isFlagged ? " is-flagged" : ""}${showMine ? " is-mine" : ""}${game.exploded === id ? " is-exploded" : ""}${number > 0 && isRevealed ? ` number-${number}` : ""}${boundaryClasses}`}
               aria-label={isFlagged ? `Ruutu ${id + 1}, lippu` : showMine ? `Ruutu ${id + 1}, miina` : isRevealed ? `Ruutu ${id + 1}, ${number === 0 ? "tyhjä" : number}` : `Ruutu ${id + 1}, suljettu`}
               disabled={game.status === "won" || game.status === "lost"}
-              onClick={() => revealCell(id)}
+              onMouseDown={(event) => {
+                if (event.button === 0) revealCell(id)
+              }}
               onContextMenu={(event) => toggleFlag(event, id)}
             >
               {isFlagged ? "⚑" : showMine ? "✹" : isRevealed && number > 0 ? number : ""}

@@ -7,6 +7,7 @@ const getGrid = (mines, width, height) => {
 
     for (let column = 0; column < width; column++) {
       const id = row * width + column
+
       if (mineSet.has(id)) {
         gridRow.push(-1)
         continue
@@ -42,15 +43,6 @@ const getNeighbors = (row, column, width, height) => {
   return neighbors
 }
 
-const touchesZero = (row, column, grid) => {
-  const height = grid.length
-  const width = grid[0].length
-
-  return getNeighbors(row, column, width, height).some(([nextRow, nextColumn]) =>
-    grid[nextRow][nextColumn] === 0
-  )
-}
-
 const calculate3BV = (width, height, mines) => {
   const grid = getGrid(mines, width, height)
   const visited = Array.from({length: height}, () => Array(width).fill(false))
@@ -68,9 +60,12 @@ const calculate3BV = (width, height, mines) => {
         const [currentRow, currentColumn] = queue.shift()
 
         for (const [nextRow, nextColumn] of getNeighbors(currentRow, currentColumn, width, height)) {
-          if (!visited[nextRow][nextColumn] && grid[nextRow][nextColumn] === 0) {
+          if (!visited[nextRow][nextColumn] && grid[nextRow][nextColumn] >= 0) {
             visited[nextRow][nextColumn] = true
-            queue.push([nextRow, nextColumn])
+
+            if (grid[nextRow][nextColumn] === 0) {
+              queue.push([nextRow, nextColumn])
+            }
           }
         }
       }
@@ -79,18 +74,19 @@ const calculate3BV = (width, height, mines) => {
 
   for (let row = 0; row < height; row++) {
     for (let column = 0; column < width; column++) {
-      if (grid[row][column] > 0 && !touchesZero(row, column, grid)) {
+      if (grid[row][column] > 0 && !visited[row][column]) {
         value++
       }
     }
   }
 
+  console.log(`3BV: ${value}`)
   return value
 }
 
 export const calculateSolved3BV = (width, height, mines, revealed) => {
-  const grid = getGrid(mines, width, height)
   const mineSet = new Set(mines)
+  const grid = getGrid(mines, width, height)
   const visited = Array.from({length: height}, () => Array(width).fill(false))
   let resolved = 0
 
@@ -98,20 +94,20 @@ export const calculateSolved3BV = (width, height, mines, revealed) => {
     for (let column = 0; column < width; column++) {
       if (grid[row][column] !== 0 || visited[row][column]) continue
 
+      let containsRevealed = revealed.has(row * width + column)
       const queue = [[row, column]]
-      let containsRevealed = false
       visited[row][column] = true
 
       while (queue.length) {
         const [currentRow, currentColumn] = queue.shift()
 
-        if (revealed.has(currentRow * width + currentColumn)) {
-          containsRevealed = true
-        }
-
         for (const [nextRow, nextColumn] of getNeighbors(currentRow, currentColumn, width, height)) {
-          if (!visited[nextRow][nextColumn] && grid[nextRow][nextColumn] === 0) {
-            visited[nextRow][nextColumn] = true
+          if (visited[nextRow][nextColumn] || grid[nextRow][nextColumn] < 0) continue
+
+          visited[nextRow][nextColumn] = true
+          if (revealed.has(nextRow * width + nextColumn)) containsRevealed = true
+
+          if (grid[nextRow][nextColumn] === 0) {
             queue.push([nextRow, nextColumn])
           }
         }
@@ -126,7 +122,7 @@ export const calculateSolved3BV = (width, height, mines, revealed) => {
       const id = row * width + column
       if (
         grid[row][column] > 0
-        && !touchesZero(row, column, grid)
+        && !visited[row][column]
         && !mineSet.has(id)
         && revealed.has(id)
       ) {
@@ -135,6 +131,7 @@ export const calculateSolved3BV = (width, height, mines, revealed) => {
     }
   }
 
+  console.log(`Ratkaistu 3BV: ${resolved}`)
   return resolved
 }
 
