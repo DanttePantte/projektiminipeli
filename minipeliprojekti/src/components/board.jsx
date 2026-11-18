@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import NumberRow from "./NumberRow"
+import GameResults from "./GameResults"
 import createInitialBoard from "../scripts/2048/createInitialBoard"
 import createListener from "../scripts/2048/createListener"
 
@@ -13,6 +14,7 @@ const createGame = () => ({
 const Board = () => {
   const [game, setGame] = useState(createGame)
   const [animationsEnabled, setAnimationsEnabled] = useState(true)
+  const [round, setRound] = useState(0)
 
   useEffect(() => {
     const cleanup = createListener(setGame)
@@ -32,7 +34,10 @@ const Board = () => {
       >
         Soluanimaatiot: {animationsEnabled ? "päällä" : "pois"}
       </button>
-      <button className="scoreItem" onClick={() => setGame(createGame())}>Aloita alusta</button>
+      <button className="scoreItem" onClick={() => {
+        setGame(createGame())
+        setRound((currentRound) => currentRound + 1)
+      }}>Aloita alusta</button>
       {game.status === "won" && <button className="scoreItem" onClick={() => {
         setGame((currentGame) => ({ ...currentGame, status: "freeplay" }))
       }}>Jatka peliä</button>}
@@ -42,6 +47,12 @@ const Board = () => {
         <NumberRow key={row} row={row} values={values} freshCells={game.freshCells}/>
       ))}
     </div>
+    <GameResults
+      game="2048"
+      score={game.score}
+      complete={game.status === "won" || game.status === "over"}
+      round={round}
+    />
   </>)
 }
 
