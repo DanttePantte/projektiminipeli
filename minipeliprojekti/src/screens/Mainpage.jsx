@@ -13,6 +13,7 @@ const Main = () => {
     "Arvaa numero": "/guess",
     "2048": "/2048",
     "Mahjong": "/mahjong",
+    "Minesweeper": "/minesweeper"
   }
 
   return (<div id="mainContainer">

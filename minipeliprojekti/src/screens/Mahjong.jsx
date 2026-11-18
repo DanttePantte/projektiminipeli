@@ -61,7 +61,13 @@ const layerLayout = [
   {layer: 2, rows: 13, columns: 10, offsetRow: 2, offsetColumn: 2, hole: [4, 8, 2, 6]},
 ]
 
-const positions = layerLayout.flatMap(({layer, rows, columns, offsetRow, offsetColumn, hole}) => {
+const difficultyLevels = [
+  {id: "easy", label: "Helppo", layers: 1},
+  {id: "medium", label: "Medium", layers: 2},
+  {id: "hard", label: "Vaikea", layers: 3},
+]
+
+const getPositions = (layouts) => layouts.flatMap(({layer, rows, columns, offsetRow, offsetColumn, hole}) => {
   const [rowStart, rowEnd, colStart, colEnd] = hole
 
   const cells = []
@@ -93,15 +99,20 @@ const shuffle = (items) => {
   return shuffled
 }
 
-const getBoardPositions = () => {
+const getBoardPositions = (difficulty) => {
+  const level = difficultyLevels.find(({id}) => id === difficulty)
+  const positions = getPositions(layerLayout.slice(0, level.layers))
   const boardPositions = positions.length % 2 === 1 ? positions.slice(0, -1) : positions
   return boardPositions
 }
 
-const createTiles = () => {
-  const boardPositions = getBoardPositions()
-  const baseFaces = shuffle(tileFaces.flatMap((face) => [face, face, face]))
-  const faces = Array.from({length: boardPositions.length}, (_, index) => baseFaces[index % baseFaces.length])
+const createTiles = (difficulty) => {
+  const boardPositions = getBoardPositions(difficulty)
+  const pairCount = boardPositions.length / 2
+  const facePairs = shuffle(tileFaces.flatMap((face) =>
+    Array.from({length: Math.ceil(pairCount / tileFaces.length)}, () => [face, face])
+  ))
+  const faces = facePairs.slice(0, pairCount).flat()
   return boardPositions.map((position, index) => ({...position, id: index, face: faces[index]}))
 }
 
@@ -123,7 +134,8 @@ const getFreeTiles = (tiles, removed) => {
 
 const Mahjong = () => {
   const navigate = useNavigate()
-  const [tiles, setTiles] = useState(createTiles)
+  const [difficulty, setDifficulty] = useState("hard")
+  const [tiles, setTiles] = useState(() => createTiles("hard"))
   const [removed, setRemoved] = useState(() => new Set())
   const [selected, setSelected] = useState(null)
   const [hint, setHint] = useState([])
@@ -132,8 +144,9 @@ const Mahjong = () => {
   const freeTiles = getFreeTiles(tiles, removed)
   const remainingPairs = (tiles.length - removed.size) / 2
 
-  const restart = () => {
-    setTiles(createTiles())
+  const restart = (nextDifficulty = difficulty) => {
+    setDifficulty(nextDifficulty)
+    setTiles(createTiles(nextDifficulty))
     setRemoved(new Set())
     setSelected(null)
     setHint([])
@@ -221,6 +234,20 @@ const Mahjong = () => {
         </div>
       </header>
 
+      <div className="mahjong-difficulty" role="group" aria-label="Vaikeustaso">
+        {difficultyLevels.map(({id, label}) => (
+          <button
+            key={id}
+            type="button"
+            className={difficulty === id ? "is-active" : ""}
+            aria-pressed={difficulty === id}
+            onClick={() => restart(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       <p className="mahjong-message" aria-live="polite">
         {remainingPairs === 0 ? "Kaikki parit löytyivät. Hienosti pelattu!" : message}
       </p>
@@ -236,7 +263,7 @@ const Mahjong = () => {
             <button
               key={tile.id}
               type="button"
-              className={`mahjong-tile${tile.layer ? " is-layered" : ""}${isSelected ? " is-selected" : ""}${isHinted ? " is-hinted" : ""}${isFree ? " is-free" : ""}${!isFree ? " is-blocked" : ""}${isRemoved ? " is-removed" : ""}`}
+              className={`mahjong-tile layer-${tile.layer}${tile.layer ? " is-layered" : ""}${isSelected ? " is-selected" : ""}${isHinted ? " is-hinted" : ""}${isFree ? " is-free" : ""}${!isFree ? " is-blocked" : ""}${isRemoved ? " is-removed" : ""}`}
               style={{gridRow: tile.row + 1, gridColumn: tile.column + 1, zIndex: tile.layer + 1}}
               aria-label={isRemoved ? "Poistettu laatta" : `Laatta ${tile.face.label}${isFree ? ", vapaa" : ", estetty"}`}
               aria-pressed={isSelected || isHinted}

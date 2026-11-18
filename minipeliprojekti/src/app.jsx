@@ -5,6 +5,7 @@ import Memory from "./screens/Memory"
 import Guess from "./screens/Guess"
 import _2048 from "./screens/2048"
 import Mahjong from "./screens/Mahjong"
+import Minesweeper from "./screens/Minesweeper"
 
 const App = () => {
   return (
@@ -27,6 +28,9 @@ const App = () => {
         }/>
         <Route path="/mahjong" element={
           <Mahjong/>
+        }/>
+        <Route path="/minesweeper" element={
+          <Minesweeper/>
         }/>
       </Routes>
     </>
