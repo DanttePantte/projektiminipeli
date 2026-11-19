@@ -4,14 +4,19 @@ import getMines from "../scripts/minesweeper/getMines"
 import getNumber from "../scripts/minesweeper/getNumber"
 import get3BV, {calculateSolved3BV} from "../scripts/minesweeper/get3BV"
 import "../styles/minesweeper.css"
+import {test, getDifficulty} from "../scripts/minesweeper/getDifficulty"
+
+console.log(`Test results: ${test()}`)
+console.log(`Check results: ${getDifficulty(95,95,1805)}`)
 
 const DIFFICULTIES = {
   easy: {label: "Helppo", width: 9, height: 9, mines: 10},
   medium: {label: "Keskitaso", width: 16, height: 16, mines: 40},
   hard: {label: "Vaikea", width: 30, height: 16, mines: 99},
   extreme: {label: "Extreme", width: 30, height: 30, mines: 225},
-  impossible: {label: "Impossible", width: 20, height: 20, mines: 143},
+  impossible: {label: "Mahdoton", width: 20, height: 20, mines: 143},
 }
+const DEFAULT_CUSTOM_CONFIG = {width: 9, height: 9, mines: 10}
 
 const createGame = () => ({
   mines: null,
@@ -27,31 +32,34 @@ const createGame = () => ({
 })
 
 const calculateScore = (threeBV, elapsedSeconds, mineCount, width, height, clicks) => {
-  console.log("Calculating score...")
-  const time = Math.max(1, elapsedSeconds)
-  const validClicks = Math.max(1, clicks)
-  const density = mineCount / (height / width)
-
-  const speed = (threeBV / time)
-  const efficiency = (threeBV / validClicks)
-  const difficulty = (density * 25) ** 2
-
-  console.log(`Speed: ${speed}\nEfficiency: ${efficiency}\nDifficulty: ${difficulty}`)
-
-  return Math.round(
-    ((threeBV / time) ** 4)
-    * ((threeBV / validClicks) ** 3)
-    * ((density * 25) ** 2)
-  )
+  // P = Diff x 3BV/s**2 x Eff**3 * 100
+  const difficulty = getDifficulty(Math.min(width, height), Math.max(width, height), mineCount)
+  const speed = threeBV / elapsedSeconds
+  const efficiency = threeBV / clicks
+  return Math.round(difficulty * speed**2 * efficiency**3 * 100)
 }
 
 const Minesweeper = () => {
   const navigate = useNavigate()
   const [difficulty, setDifficulty] = useState("easy")
+  const [boardConfig, setBoardConfig] = useState(DIFFICULTIES.easy)
+  const [customConfig, setCustomConfig] = useState(DEFAULT_CUSTOM_CONFIG)
   const [game, setGame] = useState(createGame)
-  const {width: WIDTH, height: HEIGHT, mines: MINE_COUNT} = DIFFICULTIES[difficulty]
+  const {width: WIDTH, height: HEIGHT, mines: MINE_COUNT} = boardConfig
   const CELL_COUNT = WIDTH * HEIGHT
   const remainingMines = MINE_COUNT - game.flagged.size
+  const customConfigIsValid = Number.isInteger(customConfig.width)
+    && Number.isInteger(customConfig.height)
+    && Number.isInteger(customConfig.mines)
+    && customConfig.width >= 5
+    && customConfig.width <= 50
+    && customConfig.height >= 5
+    && customConfig.height <= 50
+    && customConfig.mines >= 1
+    && customConfig.mines <= customConfig.width * customConfig.height - 9
+  const customDifficulty = customConfigIsValid
+    ? getDifficulty(Math.min(customConfig.width, customConfig.height), Math.max(customConfig.width, customConfig.height), customConfig.mines)
+    : "-"
 
   const getNeighbors = (id) => {
     const row = Math.floor(id / WIDTH)
@@ -68,8 +76,9 @@ const Minesweeper = () => {
     return neighbors
   }
 
-  const startNewGame = (nextDifficulty = difficulty) => {
+  const startNewGame = (nextDifficulty = difficulty, nextConfig) => {
     setDifficulty(nextDifficulty)
+    setBoardConfig(nextConfig ?? (nextDifficulty === "custom" ? customConfig : DIFFICULTIES[nextDifficulty]))
     setGame(createGame())
   }
 
@@ -82,8 +91,6 @@ const Minesweeper = () => {
     const clicks = game.clicks + 1
     const mines = game.mines ?? getMines(WIDTH, HEIGHT, MINE_COUNT, id)
 
-    // Clicking an open numbered cell reveals its unopened neighbors when
-    // the number of adjacent flags matches the displayed number.
     if (game.revealed.has(id)) {
       const number = getNumber(id, WIDTH, HEIGHT, mines)
       const adjacentFlags = getNeighbors(id).filter((neighbor) => game.flagged.has(neighbor)).length
@@ -219,7 +226,7 @@ const Minesweeper = () => {
       startedAt,
       clicks,
       score3BV: solved3BV,
-      score: Math.round(baseScore * completionMultiplier),
+      score: Math.round(baseScore * completionMultiplier / 2),
     }))
   }
 
@@ -276,7 +283,66 @@ const Minesweeper = () => {
             {option.label} ({option.width}x{option.height}/{option.mines})
           </button>
         ))}
+        <button
+          type="button"
+          className={difficulty === "custom" ? "is-active" : ""}
+          aria-pressed={difficulty === "custom"}
+          onClick={() => startNewGame("custom")}
+        >
+          Mukautettu
+        </button>
       </div>
+
+      {difficulty === "custom" && (
+        <form
+          className="minesweeper-custom-settings"
+          onSubmit={(event) => {
+            event.preventDefault()
+            if (customConfigIsValid) startNewGame("custom", {...customConfig})
+          }}
+        >
+          <label>
+            Leveys
+            <input
+              type="number"
+              min="5"
+              max="50"
+              step="1"
+              value={customConfig.width}
+              onChange={(event) => setCustomConfig({...customConfig, width: Number(event.target.value)})}
+            />
+          </label>
+          <label>
+            Korkeus
+            <input
+              type="number"
+              min="5"
+              max="50"
+              step="1"
+              value={customConfig.height}
+              onChange={(event) => setCustomConfig({...customConfig, height: Number(event.target.value)})}
+            />
+          </label>
+          <label>
+            Miinat
+            <input
+              type="number"
+              min="1"
+              max={customConfig.width * customConfig.height - 9}
+              step="1"
+              value={customConfig.mines}
+              onChange={(event) => setCustomConfig({...customConfig, mines: Number(event.target.value)})}
+            />
+          </label>
+          <div className="minesweeper-custom-difficulty">
+            Vaikeus: <span>{customDifficulty}</span>
+          </div>
+          <button type="submit" disabled={!customConfigIsValid}>
+            Aloita {customConfig.width}x{customConfig.height}/{customConfig.mines}
+          </button>
+          {!customConfigIsValid && <span role="alert">Tarkista mitat ja miinojen määrä.</span>}
+        </form>
+      )}
 
       <div
         className="minesweeper-board"
@@ -312,6 +378,9 @@ const Minesweeper = () => {
             </button>
           )
         })}
+      </div>
+      <div id="difficultyDisplay">
+        Vaikeustaso: <span id="difficultyNumber">{getDifficulty(Math.min(WIDTH, HEIGHT), Math.max(WIDTH, HEIGHT), MINE_COUNT)}</span>
       </div>
     </main>
   )

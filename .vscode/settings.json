@@ -1,16 +1,16 @@
 {
   "workbench.colorCustomizations": {
-    "editor.lineHighlightBorder": "#FF2D9A25",
-    "editorCursor.foreground": "#FF2D9A",
-    "tab.activeBorder": "#FF2D9A35",
-    "tab.activeBorderTop": "#FF2D9A35",
-    "tab.activeBackground": "#1A0028",
-    "tab.activeForeground": "#FF6EC7",
-    "statusBar.background": "#120020",
-    "statusBar.foreground": "#FF6EC7",
-    "editorIndentGuide.activeBackground1": "#FF2D9A35",
-    "editor.selectionBackground": "#FF2D9A28",
-    "editorBracketHighlight.foreground1": "#FF2D9A",
-    "editorBracketHighlight.foreground2": "#FF6EC7"
+    "editor.lineHighlightBorder": "#9D4EDD25",
+    "editorCursor.foreground": "#9D4EDD",
+    "tab.activeBorder": "#9D4EDD35",
+    "tab.activeBorderTop": "#9D4EDD35",
+    "tab.activeBackground": "#140026",
+    "tab.activeForeground": "#2EC4B6",
+    "statusBar.background": "#140026",
+    "statusBar.foreground": "#2EC4B6",
+    "editorIndentGuide.activeBackground1": "#9D4EDD35",
+    "editor.selectionBackground": "#9D4EDD28",
+    "editorBracketHighlight.foreground1": "#9D4EDD",
+    "editorBracketHighlight.foreground2": "#2EC4B6"
   }
 }
