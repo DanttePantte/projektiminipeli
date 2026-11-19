@@ -45,6 +45,7 @@ const Minesweeper = () => {
   const [boardConfig, setBoardConfig] = useState(DIFFICULTIES.easy)
   const [customConfig, setCustomConfig] = useState(DEFAULT_CUSTOM_CONFIG)
   const [game, setGame] = useState(createGame)
+  const [flagFlashCells, setFlagFlashCells] = useState(new Set())
   const {width: WIDTH, height: HEIGHT, mines: MINE_COUNT} = boardConfig
   const CELL_COUNT = WIDTH * HEIGHT
   const remainingMines = MINE_COUNT - game.flagged.size
@@ -170,6 +171,9 @@ const Minesweeper = () => {
       flagged.add(id)
     }
 
+    if (flagged.size !== game.flagged.size) {
+      setFlagFlashCells((current) => new Set(current).add(id))
+    }
     setGame({...game, flagged, clicks: game.clicks + 1})
   }
 
@@ -366,9 +370,17 @@ const Minesweeper = () => {
               key={id}
               type="button"
               role="gridcell"
-              className={`minesweeper-cell${isRevealed ? " is-revealed" : ""}${isFlagged ? " is-flagged" : ""}${showMine ? " is-mine" : ""}${game.exploded === id ? " is-exploded" : ""}${number > 0 && isRevealed ? ` number-${number}` : ""}${boundaryClasses}`}
+              className={`minesweeper-cell${isRevealed ? " is-revealed" : ""}${isFlagged ? " is-flagged" : ""}${flagFlashCells.has(id) ? " flag-flash" : ""}${showMine ? " is-mine" : ""}${game.exploded === id ? " is-exploded" : ""}${number > 0 && isRevealed ? ` number-${number}` : ""}${boundaryClasses}`}
               aria-label={isFlagged ? `Ruutu ${id + 1}, lippu` : showMine ? `Ruutu ${id + 1}, miina` : isRevealed ? `Ruutu ${id + 1}, ${number === 0 ? "tyhjä" : number}` : `Ruutu ${id + 1}, suljettu`}
               disabled={game.status === "won" || game.status === "lost"}
+              onAnimationEnd={(event) => {
+                if (event.animationName !== "minesweeper-flag-flash") return
+                setFlagFlashCells((current) => {
+                  const next = new Set(current)
+                  next.delete(id)
+                  return next
+                })
+              }}
               onMouseDown={(event) => {
                 if (event.button === 0) revealCell(id)
               }}
