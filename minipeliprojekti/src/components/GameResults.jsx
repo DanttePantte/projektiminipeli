@@ -3,9 +3,9 @@ import "../styles/game-results.css"
 
 const scoringRules = {
   "2048": "Pisteitä kertyy yhdistetyistä laatoista niiden arvon verran.",
-  guess: "Pisteet = 10 000 ÷ arvausten määrä.",
-  memory: "Pisteet = 10 000 × parien määrä ÷ siirtojen määrä.",
-  mahjong: "Pisteet = 10 000 × parien määrä ÷ yritysten määrä.",
+  guess: "Pisteet = arvausten määrä.",
+  memory: "Pisteet = parien määrä ÷ siirtojen määrä.",
+  mahjong: "Pisteet = parien määrä ÷ yritysten määrä.",
 }
 
 const GameResults = ({game, score, complete, round}) => {
