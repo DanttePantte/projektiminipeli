@@ -53,9 +53,9 @@ const Minesweeper = () => {
     && Number.isInteger(customConfig.height)
     && Number.isInteger(customConfig.mines)
     && customConfig.width >= 5
-    && customConfig.width <= 50
+    && customConfig.width <= 100
     && customConfig.height >= 5
-    && customConfig.height <= 50
+    && customConfig.height <= 100
     && customConfig.mines >= 1
     && customConfig.mines <= customConfig.width * customConfig.height - 9
   const customDifficulty = customConfigIsValid
@@ -254,7 +254,6 @@ const Minesweeper = () => {
 
     return () => window.clearInterval(timer)
   }, [game.startedAt, game.status])
-
   return (
     <main className="minesweeper-game" style={{
       "--game-width": `${Math.max(620, WIDTH * 30 + (WIDTH - 1) * 4 + 16 + 32)}px`
@@ -310,7 +309,7 @@ const Minesweeper = () => {
             <input
               type="number"
               min="5"
-              max="50"
+              max="100"
               step="1"
               value={customConfig.width}
               onChange={(event) => setCustomConfig({...customConfig, width: Number(event.target.value)})}
@@ -321,7 +320,7 @@ const Minesweeper = () => {
             <input
               type="number"
               min="5"
-              max="50"
+              max="100"
               step="1"
               value={customConfig.height}
               onChange={(event) => setCustomConfig({...customConfig, height: Number(event.target.value)})}
@@ -393,6 +392,25 @@ const Minesweeper = () => {
       </div>
       <div id="difficultyDisplay">
         Vaikeustaso: <span id="difficultyNumber">{getDifficulty(Math.min(WIDTH, HEIGHT), Math.max(WIDTH, HEIGHT), MINE_COUNT)}</span>
+      </div>
+      <div id="statsContainer">
+        {
+          game.status !== "playing" && game.status !== "ready"
+          ? <>
+            <h3>Tulokset</h3>
+            <ul id="statsList">
+              <li class="basic">Laudan 3BV: {game.score3BV}</li>
+              <li class="basic">Ratkaistu 3BV: {calculateSolved3BV(WIDTH, HEIGHT, game.mines, game.revealed)}</li>
+              <li class="basic">Vaikeustaso: {getDifficulty(Math.min(WIDTH, HEIGHT), Math.max(WIDTH, HEIGHT), MINE_COUNT)}</li>
+              <li class="speed">Aika: {game.elapsedSeconds}</li>
+              <li class="speed">3BV/s: {Math.round(calculateSolved3BV(WIDTH, HEIGHT, game.mines, game.revealed) / game.elapsedSeconds * 10) / 10}</li>
+              <li class="efficiency">Klikkaukset: {game.clicks}</li>
+              <li class="efficiency">Tehokkuus: {Math.round(game.score3BV / game.clicks * 100, 2)}%</li>
+              <li class="basic">Pisteet: {game.score.toLocaleString("fi-FI")}</li>
+            </ul>
+          </>
+          : null
+        }
       </div>
     </main>
   )

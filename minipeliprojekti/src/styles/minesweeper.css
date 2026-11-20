@@ -217,3 +217,15 @@
     padding: 4px;
   }
 }
+
+#statsList {
+  .basic {
+    color: var(--pink);
+  }
+  .speed {
+    color: var(--red);
+  }
+  .efficiency {
+    color: var(--orange);
+  }
+}

@@ -158,5 +158,5 @@ const Memory = () => {
     </main>
   )
 }
- 
+
 export default Memory

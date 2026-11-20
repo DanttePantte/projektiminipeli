@@ -29,18 +29,23 @@ const createListener = (setGame) => {
 
       const result = moveBoard(currentGame.board, direction)
       if (!result.moved) {
+        if (currentGame.status === "freeplay" && !canMove(currentGame.board)) {
+          return {...currentGame, status: "over"}
+        }
         return currentGame
       }
 
       const board = spawnTile(result.board)
-      const status = 
+      const status =
         currentGame.status == "freeplay"
-        ? "freeplay"
-        : hasWon(board) 
-          ? "won" 
-          : canMove(board) 
-            ? "playing" 
+          ? canMove(board)
+            ? "freeplay"
             : "over"
+          : hasWon(board)
+            ? "won"
+            : canMove(board)
+              ? "playing"
+              : "over"
 
       return {
         board,
